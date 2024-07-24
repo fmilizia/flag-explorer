@@ -222,6 +222,10 @@ SimplicialComplex::Encoding::Encoding(std::vector<int> enc): enc(enc) {}
 
 
 
+SimplicialComplex::Encoding::Encoding(): enc({}) {}
+
+
+
 bool SimplicialComplex::Encoding::operator == (const Encoding &other) const{
     return enc == other.enc;
 }

@@ -90,6 +90,7 @@ public:
     
     public:
         Encoding(std::vector<int> enc);
+        Encoding();
         bool operator == (const Encoding &other) const;
         bool operator < (const Encoding &other) const;
         friend std::ostream& operator << (std::ostream &o, const Encoding &E);
