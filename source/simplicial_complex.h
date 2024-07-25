@@ -4,6 +4,7 @@
 #include "vertex.h"
 class Simplex;
 class SimplexCollection;
+class Graph;
 
 #include <vector>
 #include <string>
@@ -74,6 +75,9 @@ public:
     // Given a simplex and one of its facets (the i-th one), gives the simplex sharing this facet, assuming it is unique.
     unsigned int OppositeFacet(const unsigned int &id, const unsigned int &i) const;
     
+    friend bool IsSimplicial(const std::map<Vertex,Vertex> &f, const SimplicialComplex &S, const SimplicialComplex &T);
+    friend int DegreeMod2(const std::map<Vertex,Vertex> &f, const SimplicialComplex &S, const SimplicialComplex &T);
+    
     // Given a simplex and an order on its vertices  (as a permutation of {0,...,rank-1}),
     // it assigns a number f[v] to every vertex v, 
     // telling the order of "discovery" during a "visit" of the complex (starting from 0).
@@ -95,6 +99,7 @@ public:
         bool operator < (const Encoding &other) const;
         friend std::ostream& operator << (std::ostream &o, const Encoding &E);
         friend std::istream& operator >> (std::istream &s, Encoding &E);
+        Graph OneSkeleton() const; // The 1-skeleton of a triangulation whith the given encoding.
     };
     
     // Computes the encoding of the simplicial complex.

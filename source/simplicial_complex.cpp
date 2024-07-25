@@ -172,6 +172,50 @@ unsigned int SimplicialComplex::OppositeFacet(const unsigned int &id, const unsi
 
 
 
+bool IsSimplicial(const std::map<Vertex,Vertex> &f, const SimplicialComplex &S, const SimplicialComplex &T)
+{
+    std::map<Vertex,unsigned int> T_vert, S_vert;
+    for(int i=0; i<S.NumVertices(); i++) S_vert[S.label.at(i)] = i;
+    for(int i=0; i<T.NumVertices(); i++) T_vert[T.label.at(i)] = i;
+    
+    for(const auto &p: f) if(S_vert.count(p.first) == 0 or T_vert.count(p.second) == 0) return false;
+    
+    for(unsigned int i=1; i<S.simplex_count.at(S.rank+1); i++){
+        const Simplex &s = S.simplices.at(i);
+        std::set<Vertex> fs;
+        for(Vertex v: s.GetVertices()) fs.insert(T_vert.at(f.at(S.label.at(v))));
+        if(not T.ValidSimplexId(T.GetSimplexId(Simplex(fs)))) return false;
+    }
+    return true;
+}
+
+
+
+int DegreeMod2(const std::map<Vertex,Vertex> &f, const SimplicialComplex &S, const SimplicialComplex &T)
+{
+    if(S.rank != T.rank) throw std::runtime_error("(SimplicialComplex::DegreeMod2) The complexes have different dimensions");
+    
+    std::map<Vertex,unsigned int> T_vert, S_vert;
+    for(int i=0; i<S.NumVertices(); i++) S_vert[S.label.at(i)] = i;
+    for(int i=0; i<T.NumVertices(); i++) T_vert[T.label.at(i)] = i;
+    
+    for(const auto &p: f) if(S_vert.count(p.first) == 0 or T_vert.count(p.second) == 0)
+        throw std::runtime_error("(SimplicialComplex::DegreeMod2) The map f has wrong domain or codomain");
+
+    int deg = 0;
+    const Simplex &t = T.simplices.at(T.simplex_count[T.rank]);
+    for(unsigned int i=S.simplex_count.at(S.rank); i<S.simplex_count.at(S.rank+1); i++){
+        const Simplex &s = S.simplices.at(i);
+        std::vector<Vertex> fs;
+        for(Vertex v: s.GetVertices()) fs.emplace_back(T_vert.at(f.at(S.label.at(v))));
+        std::sort(fs.begin(), fs.end());
+        if(fs == t.GetVertices()) deg++;
+    }
+    return deg%2;
+}
+
+
+
 // Given a simplex and an order on its vertices (as a permutation of {0,...,rank-1}),
 // it assigns a number f[v] to every vertex v, 
 // telling the order of "discovery" during a "visit" of the complex (starting from 0).
@@ -261,7 +305,7 @@ std::istream& operator >> (std::istream &s, SimplicialComplex::Encoding &E){
 // Computes the encoding of the simplicial complex.
 // Assumption: the complex is a flag strongly-connected pseudomanifold.
 SimplicialComplex::Encoding SimplicialComplex::StandardEncoding() const{
-    int n_ver = simplex_count[2]-simplex_count[1];
+    int n_ver = simplex_count[2]-simplex_count[1]; // Number of vertices.
     std::vector<int> current_best;
     for(unsigned int s_id = simplex_count[rank]; s_id < simplex_count[rank+1]; s_id++){
         std::vector<int> s_order(rank);
@@ -269,7 +313,7 @@ SimplicialComplex::Encoding SimplicialComplex::StandardEncoding() const{
         do{
             auto f = VisitOrder(s_id, s_order);
             std::vector<int> attempt;
-            for(unsigned int ei = simplex_count[2]; ei < simplex_count[3]; ei++){
+            for(unsigned int ei = simplex_count[2]; ei < simplex_count[3]; ei++){ // Iterate through 1-simplices.
                 if(f[facet[ei][0]-1] < f[facet[ei][1]-1]){
                     attempt.emplace_back(n_ver * f[facet[ei][0]-1] + f[facet[ei][1]-1]);
                 }else{
@@ -287,6 +331,23 @@ SimplicialComplex::Encoding SimplicialComplex::StandardEncoding() const{
     
     return Encoding(vec);
 }
+
+
+
+// The 1-skeleton of a triangulation whith the given encoding.
+Graph SimplicialComplex::Encoding::OneSkeleton() const
+{
+    Graph G;
+    
+    int n_ver = enc.at(0);
+    for(unsigned int i=1; i<enc.size(); i++){
+        int u = enc[i] % n_ver;
+        int v = enc[i] / n_ver;
+        G.Connect(u, v);
+    }
+    
+    return G;
+};
 
 
 
