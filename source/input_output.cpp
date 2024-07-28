@@ -15,7 +15,8 @@
 
 
 // Discards lines having '#' as first non-whitespace character.
-void DiscardComments(std::istream &s){
+void DiscardComments(std::istream &s)
+{
     char c;
     while(s >> c){
         s.unget();
@@ -35,17 +36,21 @@ void DiscardComments(std::istream &s){
 // Can use (), [], or {} as external delimiters.
 // ',' ';' and whitespaces can be used to separate objects.
 template<class T>
-std::istream& operator >> (std::istream &s, std::vector<T> &a){
+std::istream& operator >> (std::istream &s, std::vector<T> &a)
+{
     char end_delim;
     char c;
     
-    s >> c;
+    if(not (s >> c)) return s;
+    
     switch(c){
         case '(': end_delim = ')'; break;
         case '[': end_delim = ']'; break;
         case '{': end_delim = '}'; break;
         default: throw std::runtime_error("Error while reading a vector");
     }
+    
+    a = {};
     
     while(s >> c){
         if(c == end_delim) return s;
@@ -67,17 +72,21 @@ std::istream& operator >> (std::istream &s, std::vector<T> &a){
 // Can use (), [], or {} as external delimiters.
 // ',' ';' and whitespaces can be used to separate objects.
 template<class T>
-std::istream& operator >> (std::istream &s, std::set<T> &a){
+std::istream& operator >> (std::istream &s, std::set<T> &a)
+{
     char end_delim;
     char c;
     
-    s >> c;
+    if(not (s >> c)) return s;
+    
     switch(c){
         case '(': end_delim = ')'; break;
         case '[': end_delim = ']'; break;
         case '{': end_delim = '}'; break;
         default: throw std::runtime_error("Error while reading a set");
     }
+    
+    a = {};
     
     while(s >> c){
         if(c == end_delim) return s;
@@ -100,17 +109,21 @@ std::istream& operator >> (std::istream &s, std::set<T> &a){
 // ',' ';' and whitespaces can be used to separate T-S pairs.
 // The elements of a pair can be separated by whitespaces and (optionally) a ':'
 template<class T, class S>
-std::istream& operator >> (std::istream &s, std::map<T,S> &a){
+std::istream& operator >> (std::istream &s, std::map<T,S> &a)
+{
     char end_delim;
     char c;
     
-    s >> c;
+    if(not (s >> c)) return s;
+    
     switch(c){
         case '(': end_delim = ')'; break;
         case '[': end_delim = ']'; break;
         case '{': end_delim = '}'; break;
         default: throw std::runtime_error("Error while reading a map");
     }
+    
+    a = {};
     
     while(s >> c){
         if(c == end_delim) return s;
@@ -136,7 +149,8 @@ std::istream& operator >> (std::istream &s, std::map<T,S> &a){
 // Writes a set to an output stream.
 // Format: [T-object,...,T-object]
 template<class T>
-std::ostream& operator <<(std::ostream &o, const std::set<T> &s){
+std::ostream& operator <<(std::ostream &o, const std::set<T> &s)
+{
     o << "[";
     for(auto it=s.begin(); it!=s.end(); ){
         o << *it;
@@ -152,7 +166,8 @@ std::ostream& operator <<(std::ostream &o, const std::set<T> &s){
 // Writes a vector to an output stream.
 // Format: (T-object,...,T-object)
 template<class T>
-std::ostream& operator <<(std::ostream &o, const std::vector<T> &s){
+std::ostream& operator <<(std::ostream &o, const std::vector<T> &s)
+{
     o << "(";
     for(auto it=s.begin(); it!=s.end(); ){
         o << *it;
@@ -168,7 +183,8 @@ std::ostream& operator <<(std::ostream &o, const std::vector<T> &s){
 // Writes a map to an output stream.
 // Format: {k1: o1, ... }
 template<class T,class S>
-std::ostream& operator <<(std::ostream &o, const std::map<T,S> &m){
+std::ostream& operator <<(std::ostream &o, const std::map<T,S> &m)
+{
     o << "{";
     for(auto it=m.begin(); it!=m.end(); ){
         o << it->first << ": " << it->second;

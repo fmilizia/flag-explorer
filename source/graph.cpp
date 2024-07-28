@@ -29,17 +29,20 @@ Graph::Graph(const std::map<Vertex,std::set<Vertex>> &adj): adj(adj) {}
 // If y_i is a vertex (not a set), then an optional ":" between x_i and y_i is allowed.
 // The delimiters (first and last chars) can be {}, [] or ().
 // As separators between x_i, y_i commas and colons are allowed.
-std::istream& operator >> (std::istream &s, Graph &G){
+std::istream& operator >> (std::istream &s, Graph &G)
+{
     char end_delim;
     char c;
     
-    s >> c;
+    if(not (s >> c)) return s;
     switch(c){
         case '(': end_delim = ')'; break;
         case '[': end_delim = ']'; break;
         case '{': end_delim = '}'; break;
         default: throw std::runtime_error("Error while reading a graph");
     }
+    
+    G = {};
     
     while(s >> c){
         if(c == end_delim) return s;
@@ -77,14 +80,15 @@ std::istream& operator >> (std::istream &s, Graph &G){
 
 
 // Writes a graph on an output stream
-std::ostream& operator << (std::ostream &o, const Graph &G){
+std::ostream& operator << (std::ostream &o, const Graph &G)
+{
     o << "{\n";
     for(const auto &p: G.adj){
         o << p.first << "   [ ";
         for(const Vertex &v: p.second) o << v << " ";
         o << "]\n";
     }
-    o << "}" << std::endl;
+    o << "}" << std::flush;
     return o;
 }
 
@@ -117,7 +121,8 @@ bool Graph::IsVertex(const Vertex &v) const
 // Adds an edge between u and v (if not present already, and u != v).
 // It is not required that the vertices be already part of the graph:
 // if they are missing, they are added.
-void Graph::Connect(const Vertex &v, const Vertex &u){
+void Graph::Connect(const Vertex &v, const Vertex &u)
+{
     if(u == v) adj[v];
     else{
         adj[v].insert(u);
@@ -127,13 +132,15 @@ void Graph::Connect(const Vertex &v, const Vertex &u){
 
 
 
-void Graph::AddVertex(const Vertex &v){
+void Graph::AddVertex(const Vertex &v)
+{
     adj[v];
 }
 
 
 
-void Graph::RemoveVertex(const Vertex &v){
+void Graph::RemoveVertex(const Vertex &v)
+{
     for(const Vertex &u: adj[v]){
         adj[u].erase(v);
     }
@@ -208,7 +215,8 @@ std::set<Vertex> Graph::CommonNeighbors(const std::set<Vertex> &V) const
 
 // Every vertex adjacent to y becomes adjacent to x, and y is deleted (if != x).
 // x and y must be vertices of the graph.
-void Graph::IdentifyVertices(const Vertex &x, const Vertex &y){
+void Graph::IdentifyVertices(const Vertex &x, const Vertex &y)
+{
     if(adj.count(x) == 0 or adj.count(y) == 0) throw std::runtime_error("(Graph::IdentityVertices) The graph does not contain the given vertices");
     if(x == y) return;
     for(const Vertex &v: adj[y]) if(v != x){
@@ -226,7 +234,8 @@ void Graph::IdentifyVertices(const Vertex &x, const Vertex &y){
 
 // Adds a new vertex subdividing the edge [x,y]. It becomes adjacent to common neighs. of x and y.
 // x and y must be distinc adjacent vertices.
-void Graph::SubdivideEdge(const Vertex &x, const Vertex &y){
+void Graph::SubdivideEdge(const Vertex &x, const Vertex &y)
+{
     if(x == y) throw std::runtime_error("(Graph::SubdivideEdge) The two vertices coincide");
     if(adj.count(x) == 0 or adj.count(y) == 0) throw std::runtime_error("(Graph::SubdivideEdge) The graph does not contain the given vertices");
     if(adj[x].count(y) == 0) throw std::runtime_error("(Graph::SubdivideEdge) The two vertices are not adjacent");
@@ -262,7 +271,8 @@ bool Graph::InSquare(const Vertex &x, const Vertex &y) const
 
 
 // A circular graph with n vertices, numbered from 0 to n-1 in order
-Graph Graph::Circle(int n){
+Graph Graph::Circle(int n)
+{
     if(n <= 2) throw std::runtime_error("(Graph::Circle) The number of vertices must be at least 3");
     Graph ans;
     for(int i=1; i<n; i++) ans.Connect(i-1, i);
@@ -500,7 +510,8 @@ int Graph::Gamma2() const
 
 
 // Returns true if f sends adjacent vertices of G to adjacent (or equal) vertices of H.
-bool Graph::IsHomomorphism(const Graph &G, const Graph &H, const std::map<Vertex,Vertex> f){
+bool Graph::IsHomomorphism(const Graph &G, const Graph &H, const std::map<Vertex,Vertex> f)
+{
     for(const auto &vv: G.adj){
         if(not f.count(vv.first)) return false;
     }
