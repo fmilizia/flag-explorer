@@ -170,7 +170,7 @@ void LocalPicture::HomFinder::ComputeRecursive()
             for(int i=ev+1; i<P.equator_length and f[eqP[i]] == -1; i++)
                 for(int j=0; j<u; j++)
                     RemoveAlternative(eqP[i], j, deleted_alternatives, changed_vertices);
-            for(int i=ev; i>=0 and f[eqP[i]] == -1; i++)
+            for(int i=ev-1; i>=0 and f[eqP[i]] == -1; i--)
                 for(int j=u+1; j<Q.equator_length; j++)
                     RemoveAlternative(eqP[i], j, deleted_alternatives, changed_vertices);
         }
