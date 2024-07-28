@@ -19,7 +19,7 @@ Simplex::Simplex():
 
 
 // Creates a Simplex from a vector of vertices.
-// The vector must ordered, strictly increasing.
+// The vector must be strictly increasingly ordered.
 Simplex::Simplex(const std::vector<Vertex> &vertex_vector):
     vertex_vector(vertex_vector),
     rank(vertex_vector.size())

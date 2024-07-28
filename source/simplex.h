@@ -20,7 +20,7 @@ class Simplex{
 public:
     
     Simplex();
-    Simplex(const std::vector<Vertex> &vertex_vector); // The vector must ordered, strictly increasing.
+    Simplex(const std::vector<Vertex> &vertex_vector); // The vector must be strictly increasingly ordered.
     Simplex(const std::set<Vertex> &vertex_set);
     
     bool operator <(const Simplex &other) const;
