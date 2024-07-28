@@ -172,6 +172,7 @@ unsigned int SimplicialComplex::OppositeFacet(const unsigned int &id, const unsi
 
 
 
+// Determines if f:S->T is a simplicial map.
 bool IsSimplicial(const std::map<Vertex,Vertex> &f, const SimplicialComplex &S, const SimplicialComplex &T)
 {
     std::map<Vertex,unsigned int> T_vert, S_vert;
@@ -191,6 +192,7 @@ bool IsSimplicial(const std::map<Vertex,Vertex> &f, const SimplicialComplex &S, 
 
 
 
+// Given a simplicial map between orientable strongly connected pseudomanifold of the same dimension, compute its degree modulo 2.
 int DegreeMod2(const std::map<Vertex,Vertex> &f, const SimplicialComplex &S, const SimplicialComplex &T)
 {
     if(S.rank != T.rank) throw std::runtime_error("(SimplicialComplex::DegreeMod2) The complexes have different dimensions");
@@ -219,6 +221,7 @@ int DegreeMod2(const std::map<Vertex,Vertex> &f, const SimplicialComplex &S, con
 // Given a simplex and an order on its vertices (as a permutation of {0,...,rank-1}),
 // it assigns a number f[v] to every vertex v, 
 // telling the order of "discovery" during a "visit" of the complex (starting from 0).
+// Assumption: the simplicial complex is a strongly-connected pseudomanifold.
 std::vector<int> SimplicialComplex::VisitOrder(const unsigned int &s_id, const std::vector<int> &s_order) const{
     std::vector<bool> visited(simplex_count[rank+1]-simplex_count[rank], false);
     std::vector<int> f(simplex_count[2]-simplex_count[1], -1);
@@ -249,9 +252,14 @@ std::vector<int> SimplicialComplex::VisitOrder(const unsigned int &s_id, const s
         if(f[vx] < 0) f[vx] = counter++;
         
         visited[so_id - simplex_count[rank]] = true;
-        for(unsigned int i=0; i<rank; i++) if(i != vso){
-            moves.emplace(so_id, i);
-        }
+        
+        std::vector<int> new_moves;
+        for(unsigned int i=0; i<rank; i++) if(i != vso) new_moves.emplace_back(i);
+        sort(new_moves.begin(), new_moves.end(), [&](int i, int j){
+            return f[simplices[so_id].GetVertices()[i]] < f[simplices[so_id].GetVertices()[j]];
+        });
+        
+        for(int u:new_moves) moves.emplace(so_id, u);
     }
     
     // The following check should be superflous.

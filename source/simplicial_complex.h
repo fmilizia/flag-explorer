@@ -75,7 +75,10 @@ public:
     // Given a simplex and one of its facets (the i-th one), gives the simplex sharing this facet, assuming it is unique.
     unsigned int OppositeFacet(const unsigned int &id, const unsigned int &i) const;
     
+    // Determines if f:S->T is a simplicial map.
     friend bool IsSimplicial(const std::map<Vertex,Vertex> &f, const SimplicialComplex &S, const SimplicialComplex &T);
+    
+    // Given a simplicial map between orientable strongly connected pseudomanifold of the same dimension, compute its degree modulo 2.
     friend int DegreeMod2(const std::map<Vertex,Vertex> &f, const SimplicialComplex &S, const SimplicialComplex &T);
     
     // Given a simplex and an order on its vertices  (as a permutation of {0,...,rank-1}),
