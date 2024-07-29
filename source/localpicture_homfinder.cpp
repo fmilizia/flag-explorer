@@ -116,7 +116,18 @@ void LocalPicture::HomFinder::Compute()
         }
         
         ComputeRecursive();
-        if(hom_found) break;
+        if(hom_found){
+            for(int i=0; i<P.NumVertices(); i++) if(f[i] < 0 or f[i] >= Q.NumVertices())
+                throw std::runtime_error("(LocalPicture::Homfinder::Compute) Invalid map");
+            // Check the restriction on the equator.
+            if(f[eqP[0]] != 0 or f[eqP[P.equator_length-1]] != Q.equator_length-1)
+                throw std::runtime_error("(LocalPicture::Homfinder::Compute) Failed extremal check");
+            for(int i=0; i<P.equator_length-1; i++){
+                if(f[eqP[i+1]] != f[eqP[i]] and f[eqP[i+1]] != f[eqP[i]] + 1)
+                    throw std::runtime_error("(LocalPicture::Homfinder::Compute) Failed equator check");
+            }
+            break;
+        }
     }
     computed = true;
 }
