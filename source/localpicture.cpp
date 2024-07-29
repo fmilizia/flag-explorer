@@ -413,5 +413,29 @@ bool LocalPicture::IsHomomorphism(const LocalPicture &P, const LocalPicture &Q, 
 }
 
 
-    
+
+// The group C_2 x C_2 acts on localpictures by reflections / inversions.
+// This function computes a set of representatives for the cosets w.r.t.
+// the subset acting trivially on the locapicture.
+std::vector<std::bitset<2>> LocalPicture::ReflectInvertRepresentatives() const
+{
+    std::vector<int> isomorphic;
+    for(int k=0; k<2; k++){ //invert?
+        for(int j=0; j<2; j++){ //reflect?
+            HomFinder F(*this, *this, j > 0, k > 0);
+            if(F.HomExists()) isomorphic.emplace_back(j + 2*k);
+        }
+    }
+    std::set<int> taken;
+    std::vector<std::bitset<2>> reps;
+    for(int z=0; z<4; z++){
+        if(taken.count(z)) continue;
+        reps.emplace_back(z);
+        for(int w:isomorphic) taken.emplace(z ^ w);
+    }
+    return reps;
+}
+
+
+
 #endif

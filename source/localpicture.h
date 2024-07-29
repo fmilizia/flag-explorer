@@ -106,6 +106,11 @@ public:
     // where Q' is obtain from Q by reflecting and/or inverting as dictated by the parameters.
     static bool IsHomomorphism(const LocalPicture &P, const LocalPicture &Q, const std::map<Vertex,Vertex> &f, bool reflect, bool invert);
     
+    // The group C_2 x C_2 acts on localpictures by reflections / inversions.
+    // This function computes a set of representatives for the cosets w.r.t.
+    // the subset acting trivially on the locapicture.
+    std::vector<std::bitset<2>> ReflectInvertRepresentatives() const;
+    
     class HomFinder;
 };
 
