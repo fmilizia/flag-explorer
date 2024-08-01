@@ -103,6 +103,7 @@ public:
         friend std::ostream& operator << (std::ostream &o, const Encoding &E);
         friend std::istream& operator >> (std::istream &s, Encoding &E);
         Graph OneSkeleton() const; // The 1-skeleton of a triangulation whith the given encoding.
+        int NumVertices() const; // The number of vertices of the corresponding complex.
     };
     
     // Computes the encoding of the simplicial complex.

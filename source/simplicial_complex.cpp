@@ -359,6 +359,14 @@ Graph SimplicialComplex::Encoding::OneSkeleton() const
 
 
 
+// The number of vertices of the corresponding complex.
+int SimplicialComplex::Encoding::NumVertices() const
+{
+    return enc.at(0);
+}
+
+
+
 SimplicialComplex::IsomorphismFinder::IsomorphismFinder(const SimplicialComplex &X, const SimplicialComplex &Y):
     X(X),
     Y(Y),
