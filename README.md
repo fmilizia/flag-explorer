@@ -1,7 +1,7 @@
 # Flag explorer
 
 This is an implementation of the algorithm described in the paper _Simplicial maps betweenn spheres and Davis' manifolds with positive simplicial volume_.
-It is the C++ implementation which has been used to perform the experiments mentioned in the paper.
+It is the C++ implementation that has been used to perform the experiments mentioned in the paper.
 
 
 
