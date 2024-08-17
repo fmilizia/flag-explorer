@@ -34,3 +34,10 @@ While running, the program produces a "history" of found triangulations, which i
 It is advisable to _redirect_ this output to a file, when executing the program.
 The resulting "history file" can later be read at the beginning of a subsequent run; this behaviour can be activated by uncommenting the relevant line in the `main` function.
 
+
+
+## More information
+
+ - [Isomorphisms](Isomorphisms.md): Explanation on how the program manages to efficiently keep a big set of millions of triangulations, distinguishing them up to isomorphisms.
+ - [Logs](Logs.md): Description of the output produced by running the program.
+
