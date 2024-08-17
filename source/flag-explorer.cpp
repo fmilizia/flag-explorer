@@ -622,7 +622,8 @@ int main(){
     
     History hist;
     // Possibly, read a history of previously found triangulations:
-    // ReadLogFile(hist, "log.txt");
+    // ReadLogFile(hist, "log1.txt");
+    // ReadLogFile(hist, "log2.txt");
     
     Graph G = Graph::Circle(4).Join(Graph::Circle(4));
     Explore(G, 1000, hist);
