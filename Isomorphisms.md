@@ -2,7 +2,7 @@
 
 
 
-The program manages to gracefully handle millions of triangulations of $S^3$ and to check quite efficiently, given a triangulation, whether it is isomorphic to one of those.
+The program manages to gracefully handle millions of triangulations of the 3-sphere and to check quite efficiently, given a triangulation, whether it is isomorphic to one of those.
 How does it perform this task?
 
 
@@ -10,13 +10,13 @@ How does it perform this task?
 ## Checking if two triangulations are isomorphic
 
 The first thing to notice is that, given two triangulations, it is rather easy to check if they are isomorphic or not.
-Here we are speaking, in particular, of (flag) triangulations of $S^3$, but the same holds in general for pseudomanifolds.
+Here we are speaking, in particular, of (flag) triangulations of the 3-sphere, but the same holds in general for pseudomanifolds.
 
 The idea is simple.
-Assume that you have two triangulations $S$ and $T$ (in general, strongly connected pseudomanifolds of the same dimension), and you want to find an isomorphism from $S$ to $T$, if it exists.
-Then a friend arrives and, somehow, tells you with confidence that you should map the vertices of one of the top-dimensional simplices of S to some specific vertices of $T$ (which, of course, span a simplex of the same dimension).
-You then try to extend the partial map suggested by your friend to an isomorphism from $S$ to $T$.
-You don't need much ingenuity to do that! Everything is forced: look at a top-dimensional simplex adjacent (sharing a facet) to the first one on which the map is already defined; it must go to the corresponding simplex in $T$, adjacent to the image of the first simplex.
+Assume that you have two triangulations S and T (in general, strongly connected pseudomanifolds of the same dimension), and you want to find an isomorphism from S to T, if it exists.
+Then a friend arrives and, somehow, tells you with confidence that you should map the vertices of one of the top-dimensional simplices of S to some specific vertices of T (which, of course, span a simplex of the same dimension).
+You then try to extend the partial map suggested by your friend to an isomorphism from S to T.
+You don't need much ingenuity to do that! Everything is forced: look at a top-dimensional simplex adjacent (sharing a facet) to the first one on which the map is already defined; it must go to the corresponding simplex in T, adjacent to the image of the first simplex.
 So, you know how to extend the map to another vertex. And you continue in the same fashion, until you extend the map to an entire isomorphism or, if your friend was wrong, you find a "contradiction" at some point.
 How fast you can actually perform this construction depends on how you are storing your simplicial complexes, but you can definitely arrange to do it in polynomial time in the sizes (number of simplices) of the complexes.
 
@@ -42,7 +42,7 @@ Note that a triangulation can be labelled in only finitely many ways (but they a
 Then, we want to "encode" labelled triangulations using some easy object; for instance, finite lists of integer numbers.
 Since we are dealing with flag triangulations, which are uniquely determined by their 1-skeleton, we can use the following encoding scheme: the encoding is a finite list of integers, the first one being $N$, the number of vertices, and the remaining ones encoding the 1-simplices.
 For instance, a 1-simplex with vertices labelled $u$ and $v$, with $u < v$, can be represented by the integer $(u-1)*N+(v-1)$.
-We can list the numbers encoding the edges in increasing order, so that the encoding is uniquely dertermined from the labelled triangulation.
+We can list the numbers encoding the edges in increasing order, so that the encoding is uniquely determined from the labelled triangulation.
 
 ## Encoding an unlabelled triangulation
 
@@ -50,7 +50,7 @@ We wish to "encode" unlabelled triangulations, in such a way that the encoding i
 We want to use encoding objects which are easy to compare, so that we can decide quickly whether two encodings are equal, or which is the "smallest".
 Lists of integers are good: two of them can be compared lexicographically.
 
-We start from this idea: consider all the labellings of a triangulation, computer their encodings, and keep the smallest one.
+We start from this idea: consider all the labellings of a triangulation, compute their encodings, and keep the smallest one.
 This realizes the wish expressed above, but computing this encoding takes too much time, because there are too many labellings.
 The next idea is to restrict to a specific, much smaller set of "allowed" labellings, so that we can actually perform efficiently our "keep the smallest encoding" strategy.
 
@@ -66,7 +66,7 @@ Once we have such an encoding strategy, to accomplish our task we can:
 
 The second step can be performed by executing a number of comparisons between encodings that grows as $L \cdot \log(L)$, where $L$ is the number of triangulations, which is significantly less than $L^2$ and is feasible even when $L$ is of the order of millions.
 
-By using well-known data structures, one can keep a set of encodings (representing a set of pairwise-nonisomorphic triangulations) and, given another triangulation:
+Now, by using well-known data structures, one can also keep a set of encodings (representing a set of pairwise-nonisomorphic triangulations) and, given another triangulation:
  - Compute the encoding of the triangulation;
  - Check efficiently if the encoding is already in the set, and possibly insert it in the set if it is new.
 
